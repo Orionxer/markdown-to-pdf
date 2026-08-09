@@ -1,0 +1,6 @@
+.DS_Store
+convert-markdown-to-pdf/node_modules/
+convert-markdown-to-pdf/output/
+*.log
+*.pdf
+page-*.png

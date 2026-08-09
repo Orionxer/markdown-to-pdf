@@ -6,7 +6,7 @@
 
 **Architecture:** Keep the installable skill in `convert-markdown-to-pdf/`. A Node CLI preprocesses Markdown, resolves local dependencies and a Chrome-compatible browser, renders with HTML/CSS, validates layout in-page, and writes A4 PDF plus JSON diagnostics.
 
-**Tech Stack:** Node.js 20+, marked, Playwright, sharp, pdfjs-dist, Chrome/Chromium, optional Poppler.
+**Tech Stack:** Node.js 22.13+, marked, Playwright, sharp, pdfjs-dist, Chrome/Chromium, optional Poppler.
 
 ## Global Constraints
 

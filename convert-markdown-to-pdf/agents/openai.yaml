@@ -1,0 +1,4 @@
+interface:
+  display_name: "Markdown to PDF"
+  short_description: "Render CJK Markdown as polished A4 PDF"
+  default_prompt: "Use $convert-markdown-to-pdf to convert this Markdown file into a polished A4 PDF."

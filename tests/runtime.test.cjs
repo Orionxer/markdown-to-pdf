@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { browserCandidates, fontStack } = require('../convert-markdown-to-pdf/scripts/lib/runtime.cjs');
+const { browserCandidates, fontStack } = require('../markdown-to-pdf/scripts/lib/runtime.cjs');
 
 test('explicit browser and CHROME_PATH have highest priority', () => {
   const candidates = browserCandidates({

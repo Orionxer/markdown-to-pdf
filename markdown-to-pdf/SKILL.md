@@ -1,5 +1,5 @@
 ---
-name: convert-markdown-to-pdf
+name: markdown-to-pdf
 description: Use when converting Markdown files to polished A4 PDFs, especially documents containing Chinese or other CJK text, local or remote images, GFM tables, fenced code blocks, shell commands, YAML frontmatter, or Obsidian callouts.
 ---
 

@@ -10,16 +10,16 @@ A portable Agent Skill that converts Markdown into polished A4 PDF through headl
 
 ## Install
 
-After publishing this repository as `Orionxer/markdown_to_pdf`, install it with the standard Skills CLI:
+After publishing this repository as `Orionxer/markdown-to-pdf`, install it with the standard Skills CLI:
 
 ```bash
-npx skills add Orionxer/markdown_to_pdf --skill convert-markdown-to-pdf
+npx skills add Orionxer/markdown-to-pdf --skill markdown-to-pdf
 ```
 
 For a manual installation, clone or download the repository, then install its runtime dependencies:
 
 ```bash
-cd convert-markdown-to-pdf
+cd markdown-to-pdf
 npm ci
 ```
 
@@ -33,24 +33,24 @@ Install the skill for multiple compatible agents:
 
 ```bash
 mkdir -p ~/.agents/skills
-ln -s "$(pwd)" ~/.agents/skills/convert-markdown-to-pdf
+ln -s "$(pwd)" ~/.agents/skills/markdown-to-pdf
 ```
 
 Claude Code and Codex can also use their native locations:
 
 ```bash
-ln -s "$(pwd)" ~/.claude/skills/convert-markdown-to-pdf
-ln -s "$(pwd)" ~/.codex/skills/convert-markdown-to-pdf
+ln -s "$(pwd)" ~/.claude/skills/markdown-to-pdf
+ln -s "$(pwd)" ~/.codex/skills/markdown-to-pdf
 ```
 
-On Windows, copy `convert-markdown-to-pdf` into `%USERPROFILE%\\.agents\\skills\\` or `%USERPROFILE%\\.claude\\skills\\`.
+On Windows, copy `markdown-to-pdf` into `%USERPROFILE%\\.agents\\skills\\` or `%USERPROFILE%\\.claude\\skills\\`.
 
 ## Use
 
 Ask the agent:
 
 ```text
-Use $convert-markdown-to-pdf to convert notes/example.md to PDF.
+Use $markdown-to-pdf to convert notes/example.md to PDF.
 ```
 
 Or run the converter directly:

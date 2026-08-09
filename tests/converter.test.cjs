@@ -9,7 +9,7 @@ const { spawnSync } = require('node:child_process');
 const { createRequire } = require('node:module');
 const { pathToFileURL } = require('node:url');
 
-const skillPath = path.join(__dirname, '../convert-markdown-to-pdf');
+const skillPath = path.join(__dirname, '../markdown-to-pdf');
 const skillRequire = createRequire(path.join(skillPath, 'package.json'));
 const converter = path.join(skillPath, 'scripts/markdown_to_pdf.cjs');
 

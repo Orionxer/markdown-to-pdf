@@ -1,8 +1,8 @@
 {
-  "name": "convert-markdown-to-pdf-skill",
+  "name": "markdown-to-pdf-skill",
   "version": "1.0.0",
   "private": true,
-  "description": "Portable runtime dependencies and tests for the convert-markdown-to-pdf Agent Skill",
+  "description": "Portable runtime dependencies and tests for the markdown-to-pdf Agent Skill",
   "type": "commonjs",
   "engines": {
     "node": ">=22.13.0"

@@ -13,14 +13,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     defaults:
       run:
-        working-directory: convert-markdown-to-pdf
+        working-directory: markdown-to-pdf
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22.13.1
           cache: npm
-          cache-dependency-path: convert-markdown-to-pdf/package-lock.json
+          cache-dependency-path: markdown-to-pdf/package-lock.json
       - run: npm ci
       - if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk poppler-utils

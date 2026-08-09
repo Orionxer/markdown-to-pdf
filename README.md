@@ -10,6 +10,14 @@ A portable Agent Skill that converts Markdown into polished A4 PDF through headl
 
 ## Install
 
+After publishing this repository as `Orionxer/markdown_to_pdf`, install it with the standard Skills CLI:
+
+```bash
+npx skills add Orionxer/markdown_to_pdf --skill convert-markdown-to-pdf
+```
+
+For a manual installation, clone or download the repository, then install its runtime dependencies:
+
 ```bash
 cd convert-markdown-to-pdf
 npm ci

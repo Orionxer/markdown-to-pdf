@@ -6,9 +6,12 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
+const { createRequire } = require('node:module');
 const { pathToFileURL } = require('node:url');
 
-const converter = path.join(__dirname, '../scripts/markdown_to_pdf.cjs');
+const skillPath = path.join(__dirname, '../convert-markdown-to-pdf');
+const skillRequire = createRequire(path.join(skillPath, 'package.json'));
+const converter = path.join(skillPath, 'scripts/markdown_to_pdf.cjs');
 
 function runConverter(input, output) {
   return spawnSync(process.execPath, [converter, input, output], {
@@ -18,7 +21,7 @@ function runConverter(input, output) {
 }
 
 async function extractPdfText(pdfPath) {
-  const pdfjsPath = require.resolve('pdfjs-dist/legacy/build/pdf.mjs');
+  const pdfjsPath = skillRequire.resolve('pdfjs-dist/legacy/build/pdf.mjs');
   const pdfjs = await import(pathToFileURL(pdfjsPath).href);
   const bytes = new Uint8Array(fs.readFileSync(pdfPath));
   const document = await pdfjs.getDocument({ data: bytes, disableWorker: true }).promise;
@@ -32,7 +35,7 @@ async function extractPdfText(pdfPath) {
 }
 
 async function extractFirstPageItems(pdfPath) {
-  const pdfjsPath = require.resolve('pdfjs-dist/legacy/build/pdf.mjs');
+  const pdfjsPath = skillRequire.resolve('pdfjs-dist/legacy/build/pdf.mjs');
   const pdfjs = await import(pathToFileURL(pdfjsPath).href);
   const bytes = new Uint8Array(fs.readFileSync(pdfPath));
   const document = await pdfjs.getDocument({ data: bytes, disableWorker: true }).promise;

@@ -2,7 +2,7 @@
 
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const { preprocessMarkdown } = require('../scripts/lib/markdown.cjs');
+const { preprocessMarkdown } = require('../convert-markdown-to-pdf/scripts/lib/markdown.cjs');
 
 test('removes leading YAML frontmatter without changing body content', () => {
   const source = '---\ntags: [Linux, 权限]\n---\n\n# 标题\n\n正文。\n';

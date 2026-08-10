@@ -44,15 +44,35 @@ function runConverter(font, browser, tempDir) {
 }
 
 function fontFingerprint() {
-  const assetDir = '/System/Library/AssetsV2/com_apple_MobileAsset_Font8';
-  const pingfangAssets = fs.existsSync(assetDir)
-    ? fs.readdirSync(assetDir)
-      .map((name) => path.join(assetDir, name, 'AssetData/PingFang.ttc'))
-      .filter(fs.existsSync)
-    : [];
+  console.log('--- pingfang search ---');
+  const candidates = [
+    '/System/Library/Fonts',
+    '/System/Library/Fonts/Private',
+    '/Library/Fonts',
+    '/System/Library/AssetsV2/com_apple_MobileAsset_Font8',
+  ];
+  for (const dir of candidates) {
+    if (!fs.existsSync(dir)) continue;
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    for (const entry of entries) {
+      const full = path.join(dir, entry.name);
+      const assetData = entry.isDirectory() && dir.includes('AssetsV2')
+        ? path.join(full, 'AssetData')
+        : '';
+      const target = assetData && fs.existsSync(assetData) ? assetData : full;
+      if (!fs.statSync(target).isDirectory()) continue;
+      for (const inner of fs.readdirSync(target)) {
+        if (!/pingfang/i.test(inner)) continue;
+        const file = path.join(target, inner);
+        if (fs.statSync(file).isDirectory()) { console.log(`fontdir ${file}`); continue; }
+        const stat = fs.statSync(file);
+        const sha = createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 16);
+        console.log(`fontfile ${file} size=${stat.size} sha=${sha}`);
+      }
+    }
+  }
+  console.log('--- fingerprints ---');
   const files = [
-    ...pingfangAssets,
-    '/System/Library/Fonts/PingFang.ttc',
     '/System/Library/Fonts/Hiragino Sans GB.ttc',
     '/System/Library/Fonts/Supplemental/Arial Unicode.ttf',
     '/System/Library/Fonts/Menlo.ttc',
@@ -74,7 +94,7 @@ async function visibilityCheck(pdfPath, tempDir) {
     return;
   }
   const sharp = require(path.join(skillPath, 'node_modules/sharp'));
-  const { data, info } = await sharp(pngPath).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  const { data, info } = await sharp(pngPath).flatten({ background: '#ffffff' }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   // Heading sits in the top ~15% of the page; count dark pixels there.
   const bandHeight = Math.floor(info.height * 0.15);
   let dark = 0;
@@ -109,19 +129,18 @@ async function main() {
       footer: /Page\s+1\s*\/\s*\d+/.test(text),
       code: flat.includes('echo ok'),
     };
-    const glyphs = diagnostics.fonts.body.map((f) => `${f.familyName}:${f.glyphCount}`).join(', ');
+    const glyphs = diagnostics.fonts.body.map((f) => `${f.familyName}(${f.postScriptName}):${f.glyphCount}`).join(', ');
     console.log(`font=${font || 'default'} -> heading:${checks.heading} callout:${checks.callout} footer:${checks.footer} code:${checks.code} | bodyGlyphs: ${glyphs}`);
     console.log(`   extracted: ${JSON.stringify(text.slice(0, 220))}`);
     await visibilityCheck(pdfPath, tempDir);
   }
 
   // Playwright-managed Chromium (CFT 151) with the default font stack.
-  const cacheRoot = path.join(os.homedir(), 'Library/Caches/ms-playwright');
-  if (fs.existsSync(cacheRoot)) {
-  const pwChromium = (fs.readdirSync(cacheRoot)
-    .map((name) => path.join(cacheRoot, name, 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'))
-    .find(fs.existsSync)) || '';
-  if (pwChromium) {
+  let pwChromium = '';
+  try {
+    pwChromium = skillRequire('playwright').chromium.executablePath();
+  } catch { /* playwright not installed */ }
+  if (fs.existsSync(pwChromium)) {
     const { pdfPath, result, diagnostics } = runConverter('', pwChromium, tempDir);
     if (result.status !== 0) { console.log(`playwright-chromium CONVERT_FAILED: ${(result.stderr || '').slice(0, 200)}`); }
     else {
@@ -129,7 +148,6 @@ async function main() {
       const flat = text.replace(/\s+/g, ' ');
       console.log(`playwright-chromium(${pwChromium}) -> heading:${flat.includes('中文 Fixture')} callout:${flat.includes('Permission')} footer:${/Page\s+1\s*\/\s*\d+/.test(text)} code:${flat.includes('echo ok')} | browser: ${diagnostics.browser}`);
     }
-  }
   }
   fs.rmSync(tempDir, { recursive: true, force: true });
 }

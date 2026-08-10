@@ -15,10 +15,10 @@ jobs:
       run:
         working-directory: markdown-to-pdf
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 22.13.1
+          node-version: 24
           cache: npm
           cache-dependency-path: markdown-to-pdf/package-lock.json
       - run: npm ci

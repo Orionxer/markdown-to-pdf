@@ -1,0 +1,3 @@
+# Normalize line endings to LF on every platform so regex-based tests
+# (e.g. the SKILL.md frontmatter check) behave identically on Windows.
+* text=auto eol=lf

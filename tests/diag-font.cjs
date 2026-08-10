@@ -9,6 +9,7 @@ const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 const { pathToFileURL } = require('node:url');
 const { createRequire } = require('node:module');
+const { createHash } = require('node:crypto');
 
 const skillPath = path.join(__dirname, '..', 'markdown-to-pdf');
 const skillRequire = createRequire(path.join(skillPath, 'package.json'));
@@ -37,57 +38,98 @@ function runConverter(font, browser, tempDir) {
   const args = [converter, markdownPath, pdfPath];
   if (font) args.push('--font', font);
   if (browser) args.push('--browser', browser);
-  return { pdfPath, result: spawnSync(process.execPath, args, { cwd: tempDir, encoding: 'utf8' }) };
+  const result = spawnSync(process.execPath, args, { cwd: tempDir, encoding: 'utf8' });
+  const line = result.stdout?.split('\n').find((item) => item.startsWith('DIAGNOSTICS_JSON='));
+  return { pdfPath, result, diagnostics: line ? JSON.parse(line.slice('DIAGNOSTICS_JSON='.length)) : null };
+}
+
+function fontFingerprint() {
+  const assetDir = '/System/Library/AssetsV2/com_apple_MobileAsset_Font8';
+  const pingfangAssets = fs.existsSync(assetDir)
+    ? fs.readdirSync(assetDir)
+      .map((name) => path.join(assetDir, name, 'AssetData/PingFang.ttc'))
+      .filter(fs.existsSync)
+    : [];
+  const files = [
+    ...pingfangAssets,
+    '/System/Library/Fonts/PingFang.ttc',
+    '/System/Library/Fonts/Hiragino Sans GB.ttc',
+    '/System/Library/Fonts/Supplemental/Arial Unicode.ttf',
+    '/System/Library/Fonts/Menlo.ttc',
+  ];
+  for (const file of files) {
+    if (!fs.existsSync(file)) { console.log(`fontfile MISSING: ${file}`); continue; }
+    const stat = fs.statSync(file);
+    const sha = createHash('sha256').update(fs.readFileSync(file)).digest('hex').slice(0, 16);
+    console.log(`fontfile ${path.basename(file)} size=${stat.size} sha=${sha}`);
+  }
+}
+
+async function visibilityCheck(pdfPath, tempDir) {
+  // Render page 1 to PNG with sips, then count dark pixels in the heading band.
+  const pngPath = path.join(tempDir, 'page1.png');
+  const sips = spawnSync('/usr/bin/sips', ['-s', 'format', 'png', pdfPath, '--out', pngPath], { encoding: 'utf8' });
+  if (sips.status !== 0 || !fs.existsSync(pngPath)) {
+    console.log(`   visibility: sips failed (${sips.stderr.trim().slice(0, 120)})`);
+    return;
+  }
+  const sharp = require(path.join(skillPath, 'node_modules/sharp'));
+  const { data, info } = await sharp(pngPath).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+  // Heading sits in the top ~15% of the page; count dark pixels there.
+  const bandHeight = Math.floor(info.height * 0.15);
+  let dark = 0;
+  for (let y = 0; y < bandHeight; y += 1) {
+    for (let x = 0; x < info.width; x += 1) {
+      const offset = (y * info.width + x) * 3;
+      if (data[offset] < 120 && data[offset + 1] < 140 && data[offset + 2] < 160) dark += 1;
+    }
+  }
+  console.log(`   visibility: ${dark} dark pixels in heading band (${info.width}x${info.height})`);
 }
 
 async function main() {
   console.log(`os: ${os.platform()} ${os.release()}`);
-  for (const chrome of [
-    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-    '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
-  ]) {
-    if (fs.existsSync(chrome)) {
-      const v = spawnSync(chrome, ['--version'], { encoding: 'utf8' });
-      console.log(`${chrome} -> ${v.stdout.trim() || v.stderr.trim()}`);
-    }
-  }
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'md2pdf-diag-'));
-  const candidates = ['', 'Hiragino Sans GB', 'Songti SC', 'STHeiti', 'Arial Unicode MS', 'Menlo'];
-  for (const font of candidates) {
-    const { pdfPath, result } = runConverter(font, '', tempDir);
-    const statusOk = result.status === 0;
-    if (!statusOk) {
-      console.log(`font=${font || 'default'} CONVERT_FAILED: ${(result.stderr || '').slice(0, 200)}`);
-      continue;
-    }
-    const text = await extractPdfText(pdfPath);
-    const checks = {
-      heading: text.includes('中文 Fixture'),
-      callout: text.includes('Warning') && text.includes('Permission'),
-      footer: /Page\s+1\s*\/\s*\d+/.test(text),
-      code: text.includes('echo ok'),
-    };
-    console.log(`font=${font || 'default'} -> heading:${checks.heading} callout:${checks.callout} footer:${checks.footer} code:${checks.code}`);
-    if (!checks.heading || !checks.callout || !checks.footer) {
-      console.log(`   extracted text: ${JSON.stringify(text.slice(0, 200))}`);
-    }
+  fontFingerprint();
+
+  for (const chrome of ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']) {
+    const v = spawnSync(chrome, ['--version'], { encoding: 'utf8' });
+    console.log(`${chrome} -> ${v.stdout.trim() || v.stderr.trim()}`);
   }
 
-  // Playwright-managed Chromium, if present, with the default font stack.
+  const candidates = ['', 'Hiragino Sans GB', 'Arial Unicode MS'];
+  for (const font of candidates) {
+    const { pdfPath, result, diagnostics } = runConverter(font, '', tempDir);
+    if (result.status !== 0) { console.log(`font=${font || 'default'} CONVERT_FAILED: ${(result.stderr || '').slice(0, 200)}`); continue; }
+    const text = await extractPdfText(pdfPath);
+    const flat = text.replace(/\s+/g, ' ');
+    const checks = {
+      heading: flat.includes('中文 Fixture'),
+      callout: flat.includes('Warning') && flat.includes('Permission'),
+      footer: /Page\s+1\s*\/\s*\d+/.test(text),
+      code: flat.includes('echo ok'),
+    };
+    const glyphs = diagnostics.fonts.body.map((f) => `${f.familyName}:${f.glyphCount}`).join(', ');
+    console.log(`font=${font || 'default'} -> heading:${checks.heading} callout:${checks.callout} footer:${checks.footer} code:${checks.code} | bodyGlyphs: ${glyphs}`);
+    console.log(`   extracted: ${JSON.stringify(text.slice(0, 220))}`);
+    await visibilityCheck(pdfPath, tempDir);
+  }
+
+  // Playwright-managed Chromium (CFT 151) with the default font stack.
   const cacheRoot = path.join(os.homedir(), 'Library/Caches/ms-playwright');
   if (fs.existsSync(cacheRoot)) {
-    const pwChromium = (fs.readdirSync(cacheRoot)
-      .map((name) => path.join(cacheRoot, name, 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'))
-      .find(fs.existsSync)) || '';
-    if (pwChromium) {
-      const { pdfPath, result } = runConverter('', pwChromium, tempDir);
-      if (result.status !== 0) {
-        console.log(`playwright-chromium CONVERT_FAILED: ${(result.stderr || '').slice(0, 200)}`);
-      } else {
-        const text = await extractPdfText(pdfPath);
-        console.log(`playwright-chromium -> heading:${text.includes('中文 Fixture')} callout:${text.includes('Permission')} footer:${/Page\s+1\s*\/\s*\d+/.test(text)} code:${text.includes('echo ok')}`);
-      }
+  const pwChromium = (fs.readdirSync(cacheRoot)
+    .map((name) => path.join(cacheRoot, name, 'chrome-mac', 'Chromium.app', 'Contents', 'MacOS', 'Chromium'))
+    .find(fs.existsSync)) || '';
+  if (pwChromium) {
+    const { pdfPath, result, diagnostics } = runConverter('', pwChromium, tempDir);
+    if (result.status !== 0) { console.log(`playwright-chromium CONVERT_FAILED: ${(result.stderr || '').slice(0, 200)}`); }
+    else {
+      const text = await extractPdfText(pdfPath);
+      const flat = text.replace(/\s+/g, ' ');
+      console.log(`playwright-chromium(${pwChromium}) -> heading:${flat.includes('中文 Fixture')} callout:${flat.includes('Permission')} footer:${/Page\s+1\s*\/\s*\d+/.test(text)} code:${flat.includes('echo ok')} | browser: ${diagnostics.browser}`);
     }
+  }
   }
   fs.rmSync(tempDir, { recursive: true, force: true });
 }

@@ -169,7 +169,7 @@ async function main() {
 
   const input = path.resolve(args.input);
   if (!fs.existsSync(input)) throw new Error(`Input does not exist: ${input}`);
-  const output = path.resolve(args.output || path.join(process.cwd(), 'output/pdf', `${path.parse(input).name}.pdf`));
+  const output = path.resolve(args.output || path.join(process.cwd(), 'output_pdf', `${path.parse(input).name}.pdf`));
   await fsp.mkdir(path.dirname(output), { recursive: true });
 
   const { marked, chromium, sharp } = loadDependencies();

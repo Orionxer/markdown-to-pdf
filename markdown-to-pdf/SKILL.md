@@ -9,7 +9,7 @@ Render Markdown through headless Chrome for cross-platform CJK typography, propo
 
 ## Workflow
 
-1. Resolve the input Markdown and output path. Default to `output/pdf/<source-name>.pdf` unless the user specifies a location.
+1. Resolve the input Markdown and output path. Default to `output_pdf/<source-name>.pdf` unless the user specifies a location.
 2. From this skill directory, run `npm ci` when `node_modules` is absent. If no system Chrome, Edge, or Chromium is available, run `npx playwright install chromium`.
 3. Run `scripts/markdown_to_pdf.cjs` and confirm it exits with code 0. It removes YAML frontmatter and converts Obsidian callouts in memory; never edit the source Markdown.
 4. Require `DIAGNOSTICS_JSON` to report:
@@ -26,7 +26,7 @@ Render Markdown through headless Chrome for cross-platform CJK typography, propo
 ```bash
 node "$SKILL_DIR/scripts/markdown_to_pdf.cjs" \
   "/absolute/path/input.md" \
-  "/absolute/path/output/pdf/input.pdf"
+  "/absolute/path/output_pdf/input.pdf"
 ```
 
 Set `SKILL_DIR` to this skill directory. Run `--help` for `--title`, `--font`, and `--browser`. `CHROME_PATH` also selects a browser executable.

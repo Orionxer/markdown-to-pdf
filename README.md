@@ -6,13 +6,15 @@
 > 快速把markdown文件转换为淡蓝配色且排版良好的pdf文件。
 
 ## 1. 兼容性
-- ✅ Claude Code + deepseek-V4-Flash
-- ✅ Calude Code + GLM-5.2
-- ✅ Codex + GPT 5.6 Sol / Terra / Luna
+
+| Agent | 模型 | 测试情况 |
+| --- | --- | --- |
+| Claude Code | deepseek-V4-Flash | ✅ 通过 |
+| Claude Code | GLM-5.2 | ✅ 通过 |
+| Codex | GPT 5.6 Sol / Terra / Luna | ✅ 通过 |
 
 ## 2. 安装
 
-> [!TIP] 
 > 提供两种安装方式，任选其一即可。最方便的就是 AI Agent 自己安装，也可以选择手动安装。
 
 ### 2.1 AI Agent 安装

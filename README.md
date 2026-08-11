@@ -6,7 +6,8 @@ A portable Agent Skill that converts Markdown into polished A4 PDF through headl
 
 - Node.js 22.13 or newer
 - Chrome, Edge, Chromium, or Playwright-managed Chromium
-- Poppler (`pdfinfo` and `pdftoppm`) for full visual verification
+
+No other system tools are needed. The converter validates layout and image integrity inside the browser via DOM geometry and reports the result as `DIAGNOSTICS_JSON`; no visual inspection or Poppler is required.
 
 ## Install
 
@@ -68,7 +69,7 @@ npm test
 npm run test:visual
 ```
 
-The visual test requires `pdftoppm`. The converter itself does not require Poppler.
+The optional visual test (`test:visual`) requires `pdftoppm` and is only used by CI on Linux. The converter itself does not require Poppler, and neither does the skill workflow.
 
 ## License
 

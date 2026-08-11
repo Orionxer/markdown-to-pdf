@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Orionxer/markdown-to-pdf/actions/workflows/ci.yml/badge.svg)](https://github.com/Orionxer/markdown-to-pdf/actions/workflows/ci.yml) [![Skill score](badges/skill-score.svg)](https://github.com/Orionxer/markdown-to-pdf) [![License](https://img.shields.io/github/license/Orionxer/markdown-to-pdf)](LICENSE) [![Repo size](https://img.shields.io/github/repo-size/Orionxer/markdown-to-pdf)](https://github.com/Orionxer/markdown-to-pdf)
 
-> [!Info] 快速把markdown文件转换为淡蓝配色且排版良好的pdf文件。
+> [!NOTE] 快速把markdown文件转换为淡蓝配色且排版良好的pdf文件。
 
 ## 1. 兼容性
 - ✅ Claude Code + deepseek-V4-Flash
@@ -11,7 +11,7 @@
 
 ## 2. 安装
 
-> [!Tip] 提供两种安装方式，任选其一即可。最方便的就是 AI Agent 自己安装，也可以选择手动安装。
+> [!TIP] 提供两种安装方式，任选其一即可。最方便的就是 AI Agent 自己安装，也可以选择手动安装。
 
 ### 2.1 AI Agent 安装
 直接复制以下提示词发送给你的Agent，让它自己安装

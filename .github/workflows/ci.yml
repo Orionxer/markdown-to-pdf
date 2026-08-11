@@ -1,4 +1,4 @@
-name: compat
+name: cross-platform-tests
 
 on:
   push:

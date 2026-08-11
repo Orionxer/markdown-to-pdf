@@ -16,24 +16,7 @@
 ### 2.1 AI Agent 安装
 直接复制以下提示词发送给你的Agent，让它自己安装
 ```sh
-请帮我安装 markdown-to-pdf Agent Skill（来自 Orionxer/markdown-to-pdf 仓库）。
-
-安装步骤：
-1. 克隆仓库：git clone https://github.com/Orionxer/markdown-to-pdf.git
-   （本地已有该仓库可跳过此步）
-2. 进入仓库目录：cd markdown-to-pdf
-3. 执行：npx skills add Orionxer/markdown-to-pdf --skill markdown-to-pdf
-4. 按交互提示选择：
-   - Agents：选择 Claude Code（如需同时给 Codex 使用，可再执行一次并选择 Codex）
-   - Installation scope：选择 Project 安装在当前工程，或 Global 安装到全局
-   - Installation method：选择 Symlink
-   - Installation Summary：确认安装路径无误
-   - Proceed with installation：选择 Yes 确认安装
-5. 安装运行时依赖：cd markdown-to-pdf && npm ci
-6. 确认浏览器可用：macOS 默认使用系统 Chrome；若系统无浏览器则执行
-   npx playwright install chromium
-7. 验证安装：执行 npx skills list，确认 markdown-to-pdf 已在列表中
-8. 完成后告诉我安装结果和 skill 的实际安装路径
+帮我安装 markdown-to-pdf skill：https://github.com/Orionxer/markdown-to-pdf
 ```
 
 ### 2.2 手动安装

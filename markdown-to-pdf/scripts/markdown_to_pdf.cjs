@@ -4,7 +4,7 @@
 const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
-const { preprocessMarkdown } = require('./lib/markdown.cjs');
+const { calloutExtension, preprocessMarkdown } = require('./lib/markdown.cjs');
 const { findSystemBrowser, fontStack, monospaceStack } = require('./lib/runtime.cjs');
 
 function usage() {
@@ -118,6 +118,22 @@ function stylesheet(bodyFonts, codeFonts) {
     tbody tr:nth-child(odd) { background:#f5f8fb; } tbody tr:nth-child(even) { background:#eaf1f7; }
     blockquote { margin:4pt 0 10pt; padding:7pt 9pt; border-left:3pt solid #4c8dbd; background:#edf4fa; color:#40566e; break-inside:avoid-page; }
     blockquote p:last-child { margin-bottom:0; }
+    .callout { margin:4pt 0 10pt; padding:7pt 9pt; border-left:3pt solid; border-radius:0 3pt 3pt 0; break-inside:avoid-page; }
+    .callout-title { margin:0 0 3pt; font-weight:600; }
+    .callout > *:last-child { margin-bottom:0; }
+    .callout-note { background:#eef6fc; border-color:#5b9bd5; } .callout-note .callout-title { color:#2c6aa0; }
+    .callout-abstract { background:#ecf9f7; border-color:#43b3a9; } .callout-abstract .callout-title { color:#23857c; }
+    .callout-info { background:#eaf4fc; border-color:#4f9bd9; } .callout-info .callout-title { color:#2b6f9f; }
+    .callout-todo { background:#eef6fc; border-color:#5b9bd5; } .callout-todo .callout-title { color:#2c6aa0; }
+    .callout-tip { background:#ecf9ee; border-color:#52a85b; } .callout-tip .callout-title { color:#2f7d38; }
+    .callout-success { background:#e9f8ee; border-color:#3fa45a; } .callout-success .callout-title { color:#247a40; }
+    .callout-question { background:#f1eefc; border-color:#8b7fd4; } .callout-question .callout-title { color:#5b4faf; }
+    .callout-warning { background:#fff7e0; border-color:#e2a43b; } .callout-warning .callout-title { color:#a2690a; }
+    .callout-failure { background:#fdf0f0; border-color:#d9685c; } .callout-failure .callout-title { color:#a13d32; }
+    .callout-danger { background:#fdeeee; border-color:#dd6b5c; } .callout-danger .callout-title { color:#a83226; }
+    .callout-bug { background:#fdeef3; border-color:#d95f8e; } .callout-bug .callout-title { color:#a92d5e; }
+    .callout-example { background:#f5eefb; border-color:#a06fd5; } .callout-example .callout-title { color:#7434a8; }
+    .callout-quote { background:#f5f7f8; border-color:#8b9aa6; } .callout-quote .callout-title { color:#5c6b77; }
     code { font-family:${code}; font-size:.88em; color:#a13a1b; }
     pre { margin:3pt 0 11pt; padding:10pt 12pt; border:.8pt solid #314152; border-radius:3pt; background:#17212b; color:#e6edf3; break-inside:avoid-page; white-space:pre; overflow:hidden; overflow-wrap:normal; word-break:normal; }
     pre code { display:block; width:max-content; min-width:100%; color:#e6edf3; font-family:${code}; font-size:8.8pt; line-height:1.55; }
@@ -164,6 +180,7 @@ async function main() {
   const title = args.title || firstHeading || path.parse(input).name;
   markdown = await embedLocalImages(markdown, path.dirname(input), sharp);
   marked.setOptions({ gfm: true, breaks: false });
+  marked.use({ extensions: [calloutExtension] });
   const content = await marked.parse(markdown);
   const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>${stylesheet(bodyFonts, codeFonts)}</style></head><body>${content}</body></html>`;
 

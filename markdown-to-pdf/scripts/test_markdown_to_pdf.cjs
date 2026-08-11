@@ -82,7 +82,8 @@ async function main() {
     assert.match(text, /echo\s+ok/);
     assert.doesNotMatch(text, /\$\s*echo\s+ok/);
     assert.doesNotMatch(text, /tags:\s*\[visual\]/);
-    assert.match(text, /Warning:\s*Keep permissions narrow/);
+    assert.match(text, /Keep permissions narrow/);
+    assert.match(text, /Use the minimum necessary access/);
     console.log(`PASS image corners ${JSON.stringify(counts)}`);
     console.log('PASS frontmatter removed and callout rendered');
     console.log('PASS code blocks remain searchable without injected prompts');

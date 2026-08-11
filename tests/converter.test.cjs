@@ -76,7 +76,8 @@ test('creates searchable A4 PDF with contained images and unwrapped code', async
   // name but renders no glyphs: body text is invisible and unextractable
   // there. Real macOS installs are unaffected, so only skip on CI.
   if (!(process.platform === 'darwin' && process.env.CI)) {
-    assert.match(text, /Warning:\s*Permission warning/);
+    assert.match(text, /Permission warning/);
+    assert.match(text, /Keep the minimum permission/);
     assert.match(text, /Page\s+1\s*\/\s*\d+/);
     const footer = (await extractFirstPageItems(pdfPath)).find((item) => item.str.includes('Page 1 /'));
     assert(footer && footer.height >= 5, `footer text is visually clipped (height: ${footer?.height})`);

@@ -1,4 +1,4 @@
-name: ci
+name: compat
 
 on:
   push:

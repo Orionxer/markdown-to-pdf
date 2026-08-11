@@ -1,6 +1,6 @@
 # Markdown to PDF Agent Skill
 
-[![CI](https://github.com/Orionxer/markdown-to-pdf/actions/workflows/markdown-to-pdf.yml/badge.svg)](https://github.com/Orionxer/markdown-to-pdf/actions/workflows/markdown-to-pdf.yml) [![Repo size](https://img.shields.io/github/repo-size/Orionxer/markdown-to-pdf)](https://github.com/Orionxer/markdown-to-pdf) [![License](https://img.shields.io/github/license/Orionxer/markdown-to-pdf)](LICENSE) [![Skill score](badges/skill-score.svg)](https://github.com/Orionxer/markdown-to-pdf)
+[![CI](https://github.com/Orionxer/markdown-to-pdf/actions/workflows/ci.yml/badge.svg)](https://github.com/Orionxer/markdown-to-pdf/actions/workflows/ci.yml) [![Repo size](https://img.shields.io/github/repo-size/Orionxer/markdown-to-pdf)](https://github.com/Orionxer/markdown-to-pdf) [![License](https://img.shields.io/github/license/Orionxer/markdown-to-pdf)](LICENSE) [![Skill score](badges/skill-score.svg)](https://github.com/Orionxer/markdown-to-pdf)
 
 A portable Agent Skill that converts Markdown into polished A4 PDF through headless Chrome. It is optimized for CJK typography, local and remote images, GFM tables, fenced code blocks, YAML frontmatter, and Obsidian callouts.
 

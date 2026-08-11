@@ -62,6 +62,23 @@ node scripts/markdown_to_pdf.cjs /absolute/path/input.md /absolute/path/output.p
 
 Run `node scripts/markdown_to_pdf.cjs --help` for title, font, and browser overrides.
 
+## Callout Colors
+
+Obsidian callouts (`> [!type] Title`) render as type-colored blocks:
+
+| 类型 | 样式 |
+| --- | --- |
+| warning | 🟡 黄色背景 + 黄边框（`#fff7e0`） |
+| danger / failure / bug | 🔴 红色系 |
+| note / info / todo | 🔵 蓝色系 |
+| tip / success | 🟢 绿色系 |
+| question | 🟣 紫蓝色系 |
+| example | 🟣 紫色系 |
+| abstract | 🟦 青绿色系 |
+| quote | ⚪ 灰色系 |
+
+Callout body lines are absorbed up to the first blank line, with or without a `>` prefix — both forms render as the same colored block.
+
 ## Test
 
 ```bash

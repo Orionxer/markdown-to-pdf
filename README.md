@@ -48,6 +48,11 @@ npx skills list
 转换成功后，到路径 `output_pdf` 查看pdf的转换效果
 
 ## 4. 删除SKILLS
+输入以下命令，根据提示选择即可
+```sh
+npx skills remove
+```
+也可以让 AI Agent 自行删除
 
 ## 5. 其他
 

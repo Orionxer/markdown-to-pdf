@@ -57,14 +57,16 @@ npx skills remove
 ## 5. 其他
 
 ### 引用块颜色说明
-带类型的引用块会被渲染成指定背景色，例如 warning 为 🟡 黄色。其他类型样式如下
+带类型的引用块会被渲染成指定背景色，例如 `Warning` 为 🟡 黄色。
+```md
+> [!Warning] 
+> 这是一个警告的颜色代码块语法
+```
 
 | 类型 | 样式 |
 | --- | --- |
-| Tip / Success | 🟢 绿色 |
-| Note / Info / Todo | 🔵 蓝色 |
-| Warning / Question | 🟡 黄色 |
-| Danger / Failure / Bug | 🔴 红色 |
-| Example | 🟣 紫色 |
-| Quote | ⚪ 灰色 |
-
+| Note | 🔵 蓝色 |
+| Tip | 🟢 绿色 |
+| Important | 🟣 紫色 |
+| Warning | 🟡 黄色 |
+| Caution | 🔴 红色 |

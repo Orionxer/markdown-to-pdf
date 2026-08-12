@@ -53,14 +53,16 @@ const calloutExtension = {
     // it carries a `>` prefix — Obsidian treats both forms as one callout.
     // The leading '\n' is the title line's own terminator, not a blank line.
     const bodyLines = [];
+    const rawBodyLines = [];
     const rest = src.slice(match[0].length).replace(/^\n/, '');
     for (const line of rest.split('\n')) {
       if (!line.trim()) break;
+      rawBodyLines.push(line);
       bodyLines.push(line.replace(/^>[ \t]?/, ''));
     }
     return {
       type: 'callout',
-      raw: match[0] + (bodyLines.length ? `\n${bodyLines.join('\n')}` : ''),
+      raw: match[0] + (rawBodyLines.length ? `\n${rawBodyLines.join('\n')}` : ''),
       calloutType: match[1].toLowerCase(),
       title: match[2].trim(),
       body: bodyLines.join('\n'),

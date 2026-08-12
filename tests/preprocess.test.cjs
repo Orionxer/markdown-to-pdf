@@ -57,6 +57,14 @@ test('callout body lines without a blockquote prefix render inside the callout',
   assert.doesNotMatch(html, /<blockquote>/);
 });
 
+test('prefixed and unprefixed callout bodies render identically without trailing fragments', () => {
+  const prefixed = marked.parse('> [!Note]\n> 蓝色引用块 **iperf3**。\n\n后续内容。\n');
+  const unprefixed = marked.parse('> [!Note]\n蓝色引用块 **iperf3**。\n\n后续内容。\n');
+
+  assert.equal(prefixed, unprefixed);
+  assert.doesNotMatch(prefixed, /<p>\*。<\/p>/);
+});
+
 test('callout with prefixed and unprefixed body lines renders as one block', () => {
   const html = marked.parse('> [!warning] 标题\n> 第一行\n第二行\n');
   assert.match(html, /<div class="callout callout-warning">/);

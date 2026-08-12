@@ -128,7 +128,9 @@ function stylesheet(bodyFonts, codeFonts) {
     .callout-tip { background:#ecf9ee; border-color:#52a85b; } .callout-tip .callout-title { color:#2f7d38; }
     .callout-success { background:#e9f8ee; border-color:#3fa45a; } .callout-success .callout-title { color:#247a40; }
     .callout-question { background:#f1eefc; border-color:#8b7fd4; } .callout-question .callout-title { color:#5b4faf; }
+    .callout-important { background:#f5effc; border-color:#8a63d2; } .callout-important .callout-title { color:#6a3fb5; }
     .callout-warning { background:#fff7e0; border-color:#e2a43b; } .callout-warning .callout-title { color:#a2690a; }
+    .callout-caution { background:#fef0f0; border-color:#e05252; } .callout-caution .callout-title { color:#b02a2a; }
     .callout-failure { background:#fdf0f0; border-color:#d9685c; } .callout-failure .callout-title { color:#a13d32; }
     .callout-danger { background:#fdeeee; border-color:#dd6b5c; } .callout-danger .callout-title { color:#a83226; }
     .callout-bug { background:#fdeef3; border-color:#d95f8e; } .callout-bug .callout-title { color:#a92d5e; }

@@ -44,6 +44,14 @@ test('callout extension falls back to the type label when title is empty', () =>
   assert.match(html, /<p class="callout-title">Warning<\/p>/);
 });
 
+test('callout extension title-cases GitHub alert types without titles', () => {
+  const html = marked.parse('> [!important]\n> 内容。\n\n> [!caution]\n> 内容。\n');
+  assert.match(html, /<div class="callout callout-important">[\s\S]*<p class="callout-title">Important<\/p>/);
+  assert.match(html, /<div class="callout callout-caution">[\s\S]*<p class="callout-title">Caution<\/p>/);
+  assert.doesNotMatch(html, /title">important</);
+  assert.doesNotMatch(html, /title">caution</);
+});
+
 test('callout extension leaves ordinary blockquotes alone', () => {
   const html = marked.parse('> 普通引用\n');
   assert.doesNotMatch(html, /class="callout"/);
